@@ -13,10 +13,14 @@ session_service = SessionService()
 
 
 @router.post("/", tags=["Create session"])
-async def create_session(request: CreateSessionRequest, db: Session = Depends(get_db)) -> JSONResponse:
+async def create_session(
+    request: CreateSessionRequest, db: Session = Depends(get_db)
+) -> JSONResponse:
     try:
         await session_service.create_session(request, db)
-        return JSONResponse(content="Session created successfully", status_code=status.HTTP_201_CREATED)
+        return JSONResponse(
+            content="Session created successfully", status_code=status.HTTP_201_CREATED
+        )
 
     except Exception as e:
         return JSONResponse(
