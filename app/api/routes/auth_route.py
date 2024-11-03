@@ -6,12 +6,12 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from jose.exceptions import JWTError
+from sqlalchemy.orm import Session
 
 from app.core import config
 from app.core.logger_config import logger
 from app.database.db_handler import get_db
 from app.models.coach import Coach
-from app.models.session import Session
 from app.schemes.custom_types.token import Token
 
 from app.schemes.requests.create_user_request import CreateUserRequest
@@ -23,7 +23,7 @@ auth_service = AuthService()
 oauth2_bearer = OAuth2PasswordBearer(tokenUrl="auth/token")
 
 
-@router.post("/")
+@router.post("/", tags=["User sign up"])
 async def create_user(
     request: CreateUserRequest, db: Session = Depends(get_db)
 ) -> JSONResponse:
@@ -36,7 +36,7 @@ async def create_user(
         return JSONResponse(content=str(e), status_code=status.HTTP_400_BAD_REQUEST)
 
 
-@router.post("/token", response_model=Token)
+@router.post("/token", response_model=Token, tags=["User authentication"])
 async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
     db: Session = Depends(get_db),

@@ -2,11 +2,11 @@ from typing import List
 
 from fastapi import APIRouter, Depends, status, Query
 from fastapi.responses import JSONResponse
+from sqlalchemy.orm import Session
 
 from app.core import config
 from app.core.logger_config import logger
 from app.database.db_handler import get_db
-from app.models.session import Session
 from app.schemes.requests.athlete_schema import AthleteSchema
 from app.schemes.requests.create_athlete_request import CreateAthleteRequest
 from app.schemes.requests.update_athlete_request import UpdateAthleteRequest

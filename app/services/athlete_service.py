@@ -1,11 +1,12 @@
 import uuid
 
+from sqlalchemy.orm import Session
+
 from app.core.logger_config import logger
 from app.enums.active_status import ActiveStatus
 from app.exceptions.exception_handler import TransactionException
 from app.models.athlete import Athlete
 from app.models.coach import Coach
-from app.models.session import Session
 from app.schemes.requests.create_athlete_request import CreateAthleteRequest
 from app.schemes.requests.update_athlete_request import UpdateAthleteRequest
 

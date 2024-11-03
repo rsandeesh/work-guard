@@ -6,7 +6,7 @@ from starlette.responses import JSONResponse
 
 from app.api.routes.auth_route import get_current_user
 from app.core import config
-from app.api.routes import auth_route, athlete_route
+from app.api.routes import auth_route, athlete_route, session_route
 from app.exceptions.exception_handler import TransactionException
 
 app = FastAPI(
@@ -20,6 +20,7 @@ app = FastAPI(
 
 app.include_router(auth_route.router)
 app.include_router(athlete_route.router)
+app.include_router(session_route.router)
 
 
 @app.exception_handler(TransactionException)
