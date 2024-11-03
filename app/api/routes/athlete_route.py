@@ -36,7 +36,9 @@ async def save_athlete(
 
 
 @router.put("/", tags=["Update athlete"])
-async def update_athlete(request: UpdateAthleteRequest, db: Session = Depends(get_db)) -> JSONResponse:
+async def update_athlete(
+    request: UpdateAthleteRequest, db: Session = Depends(get_db)
+) -> JSONResponse:
     try:
         await athlete_service.update_athlete(request, db)
 
@@ -52,14 +54,16 @@ async def update_athlete(request: UpdateAthleteRequest, db: Session = Depends(ge
 
 
 @router.get("/", response_model=List[AthleteSchema], tags=["Get all athletes"])
-async def get_athletes_by_coach(coach_id: str = Query(...), db: Session = Depends(get_db)) -> JSONResponse:
+async def get_athletes_by_coach(
+    coach_id: str = Query(...), db: Session = Depends(get_db)
+) -> JSONResponse:
     try:
         athletes = await athlete_service.get_athletes_by_coach(coach_id, db)
         athletes_data = [
             {
                 **athlete.to_dict(),
                 "id": str(athlete.id),
-                "contact": str(athlete.contact)
+                "contact": str(athlete.contact),
             }
             for athlete in athletes
         ]
@@ -76,10 +80,10 @@ async def get_athletes_by_coach(id: str, db: Session = Depends(get_db)) -> JSONR
     try:
         athlete = await athlete_service.get_athlete_by_id(id, db)
         athlete = {
-                **athlete.to_dict(),
-                "id": str(athlete.id),
-                "contact": str(athlete.contact)
-            }
+            **athlete.to_dict(),
+            "id": str(athlete.id),
+            "contact": str(athlete.contact),
+        }
         return athlete
     except Exception as e:
         return JSONResponse(
@@ -89,27 +93,32 @@ async def get_athletes_by_coach(id: str, db: Session = Depends(get_db)) -> JSONR
 
 
 @router.get("/count", tags=["Get athlete count"])
-async def get_athlete_count(coach_id: str = Query(...), db: Session = Depends(get_db)) -> JSONResponse:
+async def get_athlete_count(
+    coach_id: str = Query(...), db: Session = Depends(get_db)
+) -> JSONResponse:
     try:
         count = await athlete_service.get_athlete_count(coach_id, db)
         return JSONResponse(content=count, status_code=status.HTTP_200_OK)
 
     except Exception as e:
         logger.exception(f"Error occurred while deleting the athlete: {str(e)}")
-        return JSONResponse(content=f"Error occurred while deleting the athlete: {str(e)}", status_code=status.HTTP_400_BAD_REQUEST)
-
+        return JSONResponse(
+            content=f"Error occurred while deleting the athlete: {str(e)}",
+            status_code=status.HTTP_400_BAD_REQUEST,
+        )
 
 
 @router.delete("/{id}", tags=["Remove student"])
 async def remove_athlete(id: str, db: Session = Depends(get_db)) -> JSONResponse:
     try:
         await athlete_service.remove_athlete(id, db)
-        return JSONResponse(content="Athlete deleted successfully", status_code=status.HTTP_200_OK)
+        return JSONResponse(
+            content="Athlete deleted successfully", status_code=status.HTTP_200_OK
+        )
 
     except Exception as e:
         logger.exception(f"Error occurred while deleting the athlete: {str(e)}")
-        return JSONResponse(content=f"Error occurred while deleting the athlete: {str(e)}", status_code=status.HTTP_400_BAD_REQUEST)
-
-
-
-
+        return JSONResponse(
+            content=f"Error occurred while deleting the athlete: {str(e)}",
+            status_code=status.HTTP_400_BAD_REQUEST,
+        )

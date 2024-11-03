@@ -50,7 +50,10 @@ class Athlete(Base):
 
     def to_dict(self):
         return {
-            column.name: str(getattr(self, column.name)) if isinstance(getattr(self, column.name), UUID)
-            else getattr(self, column.name)
+            column.name: (
+                str(getattr(self, column.name))
+                if isinstance(getattr(self, column.name), UUID)
+                else getattr(self, column.name)
+            )
             for column in self.__table__.columns
         }
