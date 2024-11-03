@@ -3,7 +3,6 @@ import uuid
 from typing import Union
 
 import jwt
-from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
@@ -18,19 +17,18 @@ from app.schemes.requests.create_user_request import CreateUserRequest
 class AuthService:
     def __init__(self):
         self.bycrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-        self.oauth2_bearer = OAuth2PasswordBearer(tokenUrl='auth/token')
 
     async def create_user(self, request: CreateUserRequest, db: Session):
         try:
             create_coach_model = Coach(
                 id=uuid.uuid4(),
-                first_name=request.first_name,
-                last_name=request.last_name,
+                first_name=request.firstName,
+                last_name=request.lastName,
                 email=request.email,
                 password=self.bycrypt_context.hash(request.password),
                 status=ActiveStatus.ACTIVE,
                 created_by=request.email,
-                modified_by=request.email
+                modified_by=request.email,
             )
             db.add(create_coach_model)
             db.commit()
@@ -38,7 +36,9 @@ class AuthService:
             logger.exception(f"An exception occurred: {str(e)}")
             raise TransactionException(str(e))
 
-    async def authenticate_user(self, email: str, password: str, db: Session) -> Union[Coach | bool]:
+    async def authenticate_user(
+        self, email: str, password: str, db: Session
+    ) -> Union[Coach | bool]:
         try:
             user = db.query(Coach).filter(Coach.email == email).first()
             if not user:
@@ -49,11 +49,10 @@ class AuthService:
         except Exception as e:
             raise TransactionException(str(e))
 
-    async def create_access_token(self, username: str, user_id: uuid.UUID, expires_delta: timedelta):
-        encode = {'sub': username, 'id': str(user_id)}
+    async def create_access_token(
+        self, username: str, user_id: uuid.UUID, expires_delta: timedelta
+    ):
+        encode = {"sub": username, "id": str(user_id)}
         expires = datetime.utcnow() + expires_delta
-        encode.update({'exp': expires})
+        encode.update({"exp": expires})
         return jwt.encode(encode, config.SECRET_KEY, algorithm=config.ALGORITHM)
-
-
-

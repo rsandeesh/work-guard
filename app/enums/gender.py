@@ -2,7 +2,7 @@ from enum import Enum
 from sqlalchemy.dialects.postgresql import ENUM as SQL_ENUM
 
 
-class GenderEnum(str, Enum):
+class Gender(str, Enum):
     MALE = "MALE"
     FEMALE = "FEMALE"
     OTHER = "OTHER"
@@ -11,4 +11,4 @@ class GenderEnum(str, Enum):
         return str(self.value)
 
 
-gender = SQL_ENUM(GenderEnum, name="gender", create_type=False)
+gender = SQL_ENUM(Gender, name="gender", create_type=False)

@@ -10,7 +10,9 @@ from app.enums.active_status import active_status
 class Session(Base):
     __tablename__ = "session"
 
-    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
     name: Mapped[str] = mapped_column(String(200), nullable=False)
     session_date: Mapped[Date] = mapped_column(Date, nullable=False)
     venue_date: Mapped[Date] = mapped_column(Date, nullable=False)

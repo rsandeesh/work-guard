@@ -11,7 +11,9 @@ from app.enums.active_status import active_status
 class SessionDetail(Base):
     __tablename__ = "session_detail"
 
-    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
     session_id: Mapped[UUID] = mapped_column(ForeignKey("session.id"), nullable=False)
     athlete_id: Mapped[UUID] = mapped_column(ForeignKey("athlete.id"), nullable=False)
     race_time: Mapped[str] = mapped_column(String(100), nullable=False)
