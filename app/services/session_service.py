@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 
 from app.core.logger_config import logger
 from app.enums.active_status import ActiveStatus
+from app.enums.session_status import SessionStatus
 from app.exceptions.exception_handler import TransactionException
 from app.models.athlete import Athlete
 from app.models.session import Session as AthleteSession
@@ -25,7 +26,12 @@ class SessionService:
 
             sessions = [
                 SessionDetail(
-                    id=uuid.uuid4(), session_id=session_id, athlete_id=athlete.id
+                    id=uuid.uuid4(),
+                    session_id=session_id,
+                    athlete_id=athlete.id,
+                    status=ActiveStatus.ACTIVE,
+                    created_by=request.created_by,
+                    modified_by=request.created_by,
                 )
                 for athlete in athletes
             ]
@@ -36,7 +42,7 @@ class SessionService:
                 session_date=request.sess_date,
                 venue=request.venue,
                 is_completed=False,
-                status=ActiveStatus.ACTIVE,
+                status=SessionStatus.COMPLETED,
                 created_by=request.created_by,
                 modified_by=request.created_by,
                 session_details=sessions,
@@ -45,6 +51,52 @@ class SessionService:
             db.add(athlete_session)
             db.commit()
 
+        except Exception as e:
+            logger.exception(f"Error occurred while saving the session {str(e)}")
+            raise e
+
+    async def get_completed_sessions(self, db: Session):
+        try:
+            athletes = db.query(AthleteSession).filter(
+                AthleteSession.status == SessionStatus.COMPLETED
+            )
+            return athletes.all()
+
+        except Exception as e:
+            logger.exception(f"Error occurred while saving the session {str(e)}")
+            raise e
+
+    async def get_not_completed_sessions(self, db: Session):
+        try:
+            athletes = db.query(AthleteSession).filter(
+                AthleteSession.status == SessionStatus.NOT_COMPLETED
+            )
+            return athletes.all()
+
+        except Exception as e:
+            logger.exception(f"Error occurred while saving the session {str(e)}")
+            raise e
+
+    async def get_sessions_by_athlete(self, id: str, db: Session):
+        try:
+            athletes = (
+                db.query(AthleteSession)
+                .join(SessionDetail)
+                .filter(SessionDetail.athlete_id == id)
+                .limit(5)
+            )
+            return athletes.all()
+
+        except Exception as e:
+            logger.exception(f"Error occurred while saving the session {str(e)}")
+            raise e
+
+    async def get_session_count(self, coach_id: str, db: Session):
+        try:
+            count = db.query(AthleteSession).join(AthleteSession.session_details).join(SessionDetail.athlete).filter(
+                Athlete.coach_id == coach_id
+            ).count()
+            return count
         except Exception as e:
             logger.exception(f"Error occurred while saving the session {str(e)}")
             raise e

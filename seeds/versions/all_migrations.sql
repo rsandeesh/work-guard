@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS "session_detail"
     "race_time" VARCHAR(100) NOT NULL,
     "heart_rate_detail" TEXT,
     "distance" DECIMAL(10, 2),
-    "distance_type" VARCHAR(20) NOT NULL,
+    "distance_type" VARCHAR(20),
     "status" active_status,
         "created_by" VARCHAR(100) NOT NULL,
     "created_at" TIMESTAMP,

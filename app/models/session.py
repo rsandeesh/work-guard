@@ -1,5 +1,5 @@
 import uuid
-from datetime import datetime
+from datetime import datetime, time
 
 from sqlalchemy import String, Date, TIMESTAMP, Boolean, UUID, DateTime, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -16,8 +16,12 @@ class Session(Base):
     name: Mapped[str] = mapped_column(String(200), nullable=False)
     session_date: Mapped[Date] = mapped_column(Date, nullable=False)
     venue: Mapped[str] = mapped_column(String(50), nullable=False)
-    start_time: Mapped[TIMESTAMP] = mapped_column(TIMESTAMP)
-    end_date: Mapped[TIMESTAMP] = mapped_column(TIMESTAMP)
+    start_time: Mapped[TIMESTAMP] = mapped_column(
+        TIMESTAMP, default=datetime.combine(datetime.today(), time.min)
+    )
+    end_date: Mapped[TIMESTAMP] = mapped_column(
+        TIMESTAMP, default=datetime.combine(datetime.today(), time.min)
+    )
     is_completed: Mapped[bool] = mapped_column(Boolean)
     status: Mapped[str] = mapped_column(String(50), nullable=False)
     created_by: Mapped[str] = mapped_column(String(100), nullable=False)

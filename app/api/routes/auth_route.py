@@ -17,7 +17,7 @@ from app.schemes.custom_types.token import Token
 from app.schemes.requests.create_user_request import CreateUserRequest
 from app.services.auth_service import AuthService
 
-router = APIRouter(prefix=f"{config.API_PREFIX}/auth", tags=["auth"])
+router = APIRouter(prefix=f"{config.API_PREFIX}/auth")
 
 auth_service = AuthService()
 oauth2_bearer = OAuth2PasswordBearer(tokenUrl="auth/token")

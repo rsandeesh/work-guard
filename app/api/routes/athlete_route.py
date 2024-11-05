@@ -1,6 +1,7 @@
+import uuid
 from typing import List
 
-from fastapi import APIRouter, Depends, status, Query
+from fastapi import APIRouter, Depends, status, Query, Form
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 
@@ -92,9 +93,9 @@ async def get_athletes_by_coach(id: str, db: Session = Depends(get_db)) -> JSONR
         )
 
 
-@router.get("/count", tags=["Get athlete count"])
+@router.post("/count", tags=["Get athlete count"])
 async def get_athlete_count(
-    coach_id: str = Query(...), db: Session = Depends(get_db)
+    coach_id: uuid.UUID = Form(...), db: Session = Depends(get_db)
 ) -> JSONResponse:
     try:
         count = await athlete_service.get_athlete_count(coach_id, db)
